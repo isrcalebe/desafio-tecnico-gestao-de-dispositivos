@@ -1,0 +1,16 @@
+{
+  "explorer.fileNesting.patterns": {
+    "*.sln": "${capture}.sln.DotSettings, *.props",
+    "*.csproj": "${capture}.csproj.DotSettings, *.props, appsettings.json, appsettings.*.json",
+  },
+  "explorer.fileNesting.enabled": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/bin": true,
+    "**/obj": true
+  }
+}

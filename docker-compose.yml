@@ -1,0 +1,7 @@
+services:
+  device-manager:
+    build:
+      context: device-manager
+      dockerfile: source/webapi/Dockerfile
+    ports:
+      - "8080:8080"

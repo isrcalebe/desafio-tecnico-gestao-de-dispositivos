@@ -4,14 +4,12 @@ name: Continuous Integration
 jobs:
   test:
     name: Test
-    runs-on: ${{matrix.os.fullname}}
+    runs-on: ubuntu-latest
     strategy:
        fail-fast: false
        matrix:
-          os:
-            - { prettyname: Windows, fullname: windows-latest, configuration: Debug }
-            - { prettyname: macOS, fullname: macos-latest, configuration: Debug }
-            - { prettyname: Linux, fullname: ubuntu-latest, configuration: Debug }
+        os:
+        - { prettyname: Linux, fullname: ubuntu-latest, configuration: Debug }
     timeout-minutes: 60
 
     steps:

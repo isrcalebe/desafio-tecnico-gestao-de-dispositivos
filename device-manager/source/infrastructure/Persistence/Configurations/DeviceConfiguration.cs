@@ -22,7 +22,7 @@ public sealed class DeviceConfiguration : IEntityTypeConfiguration<Device>
 
         builder.Property(d => d.IMEI)
             .IsRequired()
-            .HasMaxLength(15);
+            .HasMaxLength(40);
 
         builder.HasIndex(d => d.IMEI)
             .IsUnique();

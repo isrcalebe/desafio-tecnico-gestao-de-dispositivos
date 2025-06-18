@@ -1,6 +1,6 @@
 # API de Gestão de Dispositivos e Eventos
 
-Esta é uma API RESTful desenvolvida em .NET 7 para gerenciar clientes, seus dispositivos e os eventos de telemetria recebidos. O projeto segue os princípios da Clean Architecture para garantir uma base de código organizada, testável e de fácil manutenção.
+Esta é uma API RESTful desenvolvida em .NET 9 para gerenciar clientes, seus dispositivos e os eventos de telemetria recebidos. O projeto segue os princípios da Clean Architecture para garantir uma base de código organizada, testável e de fácil manutenção.
 
 ## Requisitos
 

@@ -11,7 +11,9 @@ public class Event : Entity
 
     public virtual Device? Device { get; set; }
 
-    private Event()
+    public new DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public Event()
         : base(Guid.CreateVersion7())
     {
     }

@@ -8,7 +8,7 @@ public interface IDeviceRepository
 
     Task<Device?> GetBySerialAsync(string serial, CancellationToken cancellationToken = default);
 
-    Task<Device?> GetByClientIdAsync(Guid clientId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Device>> GetByClientIdAsync(Guid clientId, CancellationToken cancellationToken = default);
 
     Task AddAsync(Device device, CancellationToken cancellationToken = default);
 

@@ -16,16 +16,12 @@ public sealed class ClientConfiguration : IEntityTypeConfiguration<Client>
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.OwnsOne(c => c.Email, emailBuilder =>
-        {
-            emailBuilder.Property(e => e)
+        builder.Property(c => c.Email)
                 .IsRequired()
-                .HasMaxLength(255)
-                .HasColumnName("Email");
+                .HasMaxLength(255);
 
-            emailBuilder.HasIndex(e => e)
-                .IsUnique();
-        });
+        builder.HasIndex(c => c.Email)
+            .IsUnique();
 
         builder.Property(c => c.Phone)
             .HasMaxLength(20);

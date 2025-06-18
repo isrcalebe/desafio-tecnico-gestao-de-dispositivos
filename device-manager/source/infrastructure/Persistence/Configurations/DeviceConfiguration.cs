@@ -12,27 +12,20 @@ public sealed class DeviceConfiguration : IEntityTypeConfiguration<Device>
 
         builder.HasKey(d => d.Id);
 
-        builder.OwnsOne(d => d.Serial, serialBuilder =>
-        {
-            serialBuilder.Property(s => s)
-                .IsRequired()
-                .HasMaxLength(50)
-                .HasColumnName("SerialNumber");
+        builder.Property(d => d.Serial)
+            .IsRequired()
+            .HasMaxLength(50)
+            .HasColumnName("SerialNumber");
 
-            serialBuilder.HasIndex(s => s)
-                .IsUnique();
-        });
+        builder.HasIndex(d => d.Serial)
+            .IsUnique();
 
-        builder.OwnsOne(d => d.IMEI, imeiBuilder =>
-        {
-            imeiBuilder.Property(i => i)
-                .IsRequired()
-                .HasMaxLength(15)
-                .HasColumnName("IMEI");
+        builder.Property(d => d.IMEI)
+            .IsRequired()
+            .HasMaxLength(15);
 
-            imeiBuilder.HasIndex(i => i)
-                .IsUnique();
-        });
+        builder.HasIndex(d => d.IMEI)
+            .IsUnique();
 
         builder.HasMany(d => d.Events)
             .WithOne(e => e.Device)

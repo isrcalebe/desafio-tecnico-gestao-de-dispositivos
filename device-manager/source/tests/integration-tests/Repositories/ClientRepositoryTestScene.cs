@@ -51,17 +51,18 @@ public sealed class ClientRepositoryTestScene : DbTestScene, IClassFixture<DbFix
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldSetStatusToFalse()
+    public async Task DeleteAsync_ShouldRemoveClient()
     {
         var client = createClient();
 
         Db.Clients.Add(client);
         Db.SaveChanges();
-        await clientRepository.DeleteAsync(client.Id);
+        await clientRepository.DeleteAsync(client);
         var deleted = await Db.Clients.FindAsync(client.Id);
 
-        Assert.False(deleted!.Status);
+        Assert.Null(deleted);
     }
+
 
     [Fact]
     public async Task GetAllAsync_ShouldReturnOnlyActiveClients()

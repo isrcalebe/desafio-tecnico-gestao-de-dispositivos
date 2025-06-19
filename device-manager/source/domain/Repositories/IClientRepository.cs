@@ -14,5 +14,5 @@ public interface IClientRepository
 
     Task UpdateAsync(Client client, CancellationToken cancellationToken = default);
 
-    Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+    Task DeleteAsync(Client client, CancellationToken cancellationToken = default);
 }

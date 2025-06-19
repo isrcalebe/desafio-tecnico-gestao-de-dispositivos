@@ -1,5 +1,10 @@
 using DeviceManager.Application.Features.Clients.Commands;
+using DeviceManager.Application.Features.Clients.Commands.CreateClient;
+using DeviceManager.Application.Features.Clients.Commands.DeleteClient;
+using DeviceManager.Application.Features.Clients.Commands.UpdateClient;
 using DeviceManager.Application.Features.Clients.Queries;
+using DeviceManager.Application.Features.Clients.Queries.GetAllClients;
+using DeviceManager.Application.Features.Clients.Queries.GetClientById;
 using Mediator;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,33 +23,74 @@ public class ClientController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(GetClientByIdQuery.Response), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetClientByIdResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetClientById(Guid id, CancellationToken cancellationToken)
     {
-        var query = new GetClientByIdQuery.Query(id);
-        var result = await mediator.Send(query, cancellationToken);
+        if (id == Guid.Empty)
+            return BadRequest("Client ID cannot be empty.");
 
-        if (result.IsFailure)
-            return NotFound(result.Error);
+        var result = await mediator.Send(new GetClientByIdQuery(id), cancellationToken);
 
-        return Ok(result.Value);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : NotFound(result.Error);
     }
 
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateClient([FromBody] CreateClientFeature.Request request, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateClient([FromBody] CreateClientRequest request, CancellationToken cancellationToken)
     {
         if (request is null)
             return BadRequest("Request body cannot be null.");
 
-        var command = new CreateClientFeature.Request(request.Name, request.Email, request.Phone);
-        var result = await mediator.Send(command, cancellationToken);
+        var result = await mediator.Send(request, cancellationToken);
 
-        if (result.IsFailure)
-            return BadRequest(result.Error);
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(GetClientById), result.Value, result.Value)
+            : BadRequest(result.Error);
+    }
 
-        return CreatedAtAction(nameof(GetClientById), new { id = result.Value }, result.Value);
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(UpdateClientResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateClient(Guid id, [FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
+    {
+        if (request is null || request.ClientId != id)
+            return BadRequest("Invalid request or client ID mismatch.");
+
+        var result = await mediator.Send(request, cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : NotFound(result.Error);
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteClient(Guid id, CancellationToken cancellationToken)
+    {
+        if (id == Guid.Empty)
+            return BadRequest("Client ID cannot be empty.");
+
+        var result = await mediator.Send(new DeleteClientRequest(id), cancellationToken);
+
+        return result.IsSuccess
+            ? NoContent()
+            : NotFound(result.Error);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(GetAllClientsResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllClients(CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(new GetAllClientsQuery(), cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : NotFound(result.Error);
     }
 }

@@ -29,15 +29,13 @@ public sealed class ClientRepository : IClientRepository
         await db.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(Client client, CancellationToken cancellationToken = default)
     {
-        var client = await db.Clients.FindAsync([id], cancellationToken);
+        var existingClient = await db.Clients.FindAsync([client.Id], cancellationToken);
 
-        if (client is not null)
+        if (existingClient is not null)
         {
-            client.Status = false;
-            db.Entry(client).State = EntityState.Modified;
-
+            db.Clients.Remove(existingClient);
             await db.SaveChangesAsync(cancellationToken);
         }
     }

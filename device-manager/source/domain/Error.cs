@@ -4,7 +4,7 @@ public record Error
 {
     public string Message { get; init; } = string.Empty;
 
-    public IReadOnlyCollection<string> AdditionalInfo { get; init; }
+    public IReadOnlyList<string> AdditionalInfo { get; init; }
 
     public Error(string message, params string[] additionalInfo)
     {

@@ -53,7 +53,7 @@ public sealed class ClientRepository : IClientRepository
     public Task<Client?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         return db.Clients
-            .FirstOrDefaultAsync(c => c.Email == email && c.Status, cancellationToken);
+            .FirstOrDefaultAsync(c => c.Email.Value == email && c.Status, cancellationToken);
     }
 
     public async Task<Client?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

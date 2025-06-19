@@ -61,7 +61,28 @@ public class Device : AggregateRoot
         if (ActivatedAt.HasValue)
             return false;
 
-        ActivatedAt = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
+
+        ActivatedAt = now;
+        LastUpdatedAt = now;
         return true;
+    }
+
+    public void UpdateSerialNumber(SerialNumber serialNumber)
+    {
+        SerialNumber = serialNumber;
+        LastUpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateIMEI(IMEI imei)
+    {
+        IMEI = imei;
+        LastUpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateClientId(Guid clientId)
+    {
+        ClientId = clientId;
+        LastUpdatedAt = DateTime.UtcNow;
     }
 }

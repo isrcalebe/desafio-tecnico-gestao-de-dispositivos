@@ -1,4 +1,6 @@
+using System.IO;
 using DeviceManager.Domain.Entities;
+using DeviceManager.Domain.ValueObjects;
 using DeviceManager.Infrastructure.Repositories;
 
 namespace DeviceManager.IntegrationTests.Repositories;
@@ -31,10 +33,10 @@ public sealed class EventRepositoryTestScene : DbTestScene, IClassFixture<DbFixt
     {
         return Client.Create(
             "Test Client",
-            email ?? $"test{Guid.NewGuid()}@mail.com",
+            email ?? $"test{Guid.CreateVersion7()}@mail.com",
             phone: "1234567890",
             status: status
-        );
+        ).Value;
     }
 
     private async Task<Device> createAndPersistDeviceAsync()
@@ -42,11 +44,14 @@ public sealed class EventRepositoryTestScene : DbTestScene, IClassFixture<DbFixt
         var client = createClient();
         await clientRepository.AddAsync(client);
 
-        var device = Device.Create(
-            serial: "serial" + Guid.CreateVersion7().ToString("N"),
-            imei: "imei" + Guid.CreateVersion7().ToString("N"),
-            clientId: client.Id
-        );
+        var random = new Random();
+        var randomIMEI = string.Concat(Enumerable.Range(0, 15).Select(_ => random.Next(0, 10).ToString(CultureInfo.InvariantCulture)));
+
+        var manufacturerCode = new [] { "ABC", "XYZ", "DEF", "GHI", "JKL" } [random.Next(0, 5)];
+        var serialNumber = SerialNumber.CreateManufacturer(manufacturerCode).Value;
+        var imeiNumber = IMEI.Create(randomIMEI).Value;
+
+        var device = Device.Create(serialNumber.Value, imeiNumber, client.Id).Value;
         await deviceRepository.AddAsync(device);
 
         return device;

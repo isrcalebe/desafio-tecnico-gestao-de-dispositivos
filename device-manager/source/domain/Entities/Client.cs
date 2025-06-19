@@ -72,4 +72,28 @@ public class Client : AggregateRoot
 
         return client;
     }
+
+    public void UpdateName(ClientName name)
+    {
+        Name = name;
+        LastUpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateEmail(Email email)
+    {
+        Email = email;
+        LastUpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdatePhone(PhoneNumber? phone)
+    {
+        Phone = phone;
+        LastUpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateStatus(bool status)
+    {
+        Status = status;
+        LastUpdatedAt = DateTime.UtcNow;
+    }
 }

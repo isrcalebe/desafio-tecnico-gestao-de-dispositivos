@@ -55,6 +55,6 @@ public sealed class DeviceRepository : IDeviceRepository
     public async Task<Device?> GetBySerialAsync(string serial, CancellationToken cancellationToken = default)
     {
         return await db.Devices
-            .FirstOrDefaultAsync(d => d.Serial == serial, cancellationToken);
+            .FirstOrDefaultAsync(d => d.SerialNumber.Value == serial, cancellationToken);
     }
 }

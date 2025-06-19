@@ -15,13 +15,13 @@ public class ClientName : ValueObject
     public static Result<ClientName, Error> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return Error.WithMessage("Client name cannot be empty or whitespace.");
+            return new Error("Client name cannot be empty or whitespace.");
 
         if (value.Length < 4)
-            return Error.WithMessage("Client name must be at least 4 characters long.");
+            return new Error("Client name must be at least 4 characters long.");
 
         if (value.Length > 100)
-            return Error.WithMessage("Client name must not exceed 100 characters.");
+            return new Error("Client name must not exceed 100 characters.");
 
         return new ClientName(value);
     }

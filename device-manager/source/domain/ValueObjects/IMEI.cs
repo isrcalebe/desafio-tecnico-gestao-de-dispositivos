@@ -16,13 +16,10 @@ public partial class IMEI : ValueObject
     public static Result<IMEI, Error> Create(string imei)
     {
         if (string.IsNullOrWhiteSpace(imei))
-            return Error.WithMessage("IMEI cannot be empty or whitespace.");
+            return new Error("IMEI cannot be empty or whitespace.");
 
         if (!imeiRegex().IsMatch(imei))
-        {
-            return Error.WithMessage("IMEI format is invalid.")
-                        .WithAdditionalInfo("It should be a 15-digit number.");
-        }
+            return new Error("IMEI format is invalid.", "It should be a 15-digit number.");
 
         return new IMEI(imei);
     }

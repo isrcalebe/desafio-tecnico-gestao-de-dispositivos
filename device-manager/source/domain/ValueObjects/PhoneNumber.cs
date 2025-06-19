@@ -15,15 +15,14 @@ public class PhoneNumber : ValueObject
     public static Result<PhoneNumber, Error> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return Error.WithMessage("Phone number cannot be empty or whitespace.");
+            return new Error("Phone number cannot be empty or whitespace.");
 
         if (value.Length < 10 || value.Length > 15)
-            return Error.WithMessage("Phone number must be between 10 and 15 characters long.");
+            return new Error("Phone number must be between 10 and 15 characters long.");
 
         if (!value.All(char.IsDigit))
         {
-            return Error.WithMessage("Phone number must contain only digits.")
-                        .WithAdditionalInfo("No spaces, dashes, or other characters are allowed.");
+            return new Error("Phone number must contain only digits.", "No spaces, dashes, or other characters are allowed.");
         }
 
         return new PhoneNumber(value);
@@ -40,5 +39,5 @@ public class PhoneNumber : ValueObject
 
     public override int GetHashCode() => Value.GetHashCode();
 
-    public static implicit operator string(PhoneNumber phoneNumber) => phoneNumber.Value;
+    public static implicit operator string?(PhoneNumber? phoneNumber) => phoneNumber?.Value;
 }

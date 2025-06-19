@@ -16,13 +16,10 @@ public partial class Email : ValueObject
     public static Result<Email, Error> Create(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
-            return Error.WithMessage("Email cannot be empty or whitespace.");
+            return new Error("Email cannot be empty or whitespace.");
 
         if (!emailRegex().IsMatch(email))
-        {
-            return Error.WithMessage("Email format is invalid.")
-                        .WithAdditionalInfo("It should be in the format 'example@domain.com'.");
-        }
+            return new Error("Email format is invalid.", "It should be in the format 'example@domain.com'.");
 
         return new Email(email.ToLowerInvariant());
     }

@@ -16,13 +16,13 @@ public partial class SerialNumber : ValueObject
     public static Result<SerialNumber, Error> Create(string serialNumber)
     {
         if (string.IsNullOrWhiteSpace(serialNumber))
-            return Error.WithMessage("Serial number cannot be empty or whitespace.");
+            return new Error("Serial number cannot be empty or whitespace.");
 
         if (!serialRegex().IsMatch(serialNumber))
         {
-            return Error.WithMessage("Serial number format is invalid.")
-                        .WithAdditionalInfo("It should be in the format 'SN-YYYY-MMM-XXXXXXXX'.")
-                        .WithAdditionalInfo("Where YYYY is a 4-digit year, MMM is a 3-letter manufacturer code, and XXXXXXXXXX is an 8-character alphanumeric code.");
+            return new Error("Serial number format is invalid.",
+                             "It should be in the format 'SN-YYYY-MMM-XXXXXXXX'.",
+                            "Where YYYY is a 4-digit year, MMM is a 3-letter manufacturer code, and XXXXXXXXXX is an 8-character alphanumeric code.");
         }
 
         return new SerialNumber(serialNumber);
@@ -31,10 +31,10 @@ public partial class SerialNumber : ValueObject
     public static Result<SerialNumber, Error> CreateManufacturer(string manufacturerCode)
     {
         if (string.IsNullOrWhiteSpace(manufacturerCode))
-            return Error.WithMessage("Manufacturer code cannot be empty or whitespace.");
+            return new Error("Manufacturer code cannot be empty or whitespace.");
 
         if (manufacturerCode.Length != 3 || !manufacturerRegex().IsMatch(manufacturerCode))
-            return Error.WithMessage("Manufacturer code must be exactly 3 uppercase letters.");
+            return new Error("Manufacturer code must be exactly 3 uppercase letters.");
 
         var year = DateTime.UtcNow.Year;
         var guid = Guid.CreateVersion7();

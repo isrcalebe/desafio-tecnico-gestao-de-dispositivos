@@ -46,7 +46,7 @@ public class ClientController : ControllerBase
         var result = await mediator.Send(request, cancellationToken);
 
         return result.IsSuccess
-            ? CreatedAtAction(nameof(GetClientById), result.Value, result.Value)
+            ? CreatedAtAction(nameof(CreateClient), result.Value, result.Value)
             : BadRequest(result.Error);
     }
 

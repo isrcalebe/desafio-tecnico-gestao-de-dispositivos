@@ -1,4 +1,4 @@
-using DeviceManager.Domain.Enums;
+using DeviceManager.Domain.Entities;
 using DeviceManager.Domain.Repositories;
 using DeviceManager.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

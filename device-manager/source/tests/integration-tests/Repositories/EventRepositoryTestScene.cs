@@ -1,5 +1,4 @@
 using DeviceManager.Domain.Entities;
-using DeviceManager.Domain.Enums;
 using DeviceManager.Infrastructure.Repositories;
 
 namespace DeviceManager.IntegrationTests.Repositories;

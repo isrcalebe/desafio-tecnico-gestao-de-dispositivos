@@ -1,5 +1,4 @@
 using DeviceManager.Common.Modeling;
-using DeviceManager.Domain.Enums;
 
 namespace DeviceManager.Domain.Entities;
 

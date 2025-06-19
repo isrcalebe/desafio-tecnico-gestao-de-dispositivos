@@ -1,4 +1,5 @@
 using DeviceManager.Domain.Entities;
+using DeviceManager.Domain.ValueObjects;
 using DeviceManager.Infrastructure.Repositories;
 
 namespace DeviceManager.IntegrationTests.Repositories;
@@ -19,19 +20,22 @@ public sealed class DeviceRepositoryTestScene : DbTestScene, IClassFixture<DbFix
     {
         return Client.Create(
             "Test Client",
-            email ?? $"test{Guid.NewGuid()}@mail.com",
+            email ?? $"test{Guid.CreateVersion7()}@mail.com",
             phone: "1234567890",
             status: status
-        );
+        ).Value;
     }
 
-    private static Device createDevice(string? imei = null, string? serial = null, Guid? clientId = null)
+    private static Device createDevice(Guid? clientId = null)
     {
-        return Device.Create(
-            serial ?? "serial" + Guid.CreateVersion7().ToString("N"),
-            imei ?? "imei" + Guid.CreateVersion7().ToString("N"),
-            clientId ?? Guid.CreateVersion7()
-        );
+        var random = new Random();
+        var randomIMEI = string.Concat(Enumerable.Range(0, 15).Select(_ => random.Next(0, 10).ToString(CultureInfo.InvariantCulture)));
+
+        var manufacturerCode = new[] { "ABC", "XYZ", "DEF", "GHI", "JKL" } [random.Next(0, 5)];
+        var serialNumber = SerialNumber.CreateManufacturer(manufacturerCode).Value;
+        var imeiNumber = IMEI.Create(randomIMEI).Value;
+
+        return Device.Create(serialNumber, imeiNumber, clientId ?? Guid.CreateVersion7()).Value;
     }
 
     [Fact]
@@ -53,12 +57,13 @@ public sealed class DeviceRepositoryTestScene : DbTestScene, IClassFixture<DbFix
         await clientRepository.AddAsync(client);
         var device = createDevice(clientId: client.Id);
         await deviceRepository.AddAsync(device);
+        var serialNumber = SerialNumber.CreateManufacturer("UUU").Value;
 
-        device.Serial = "UpdatedSerial";
+        device.UpdateSerialNumber(serialNumber);
         await deviceRepository.UpdateAsync(device);
         var updated = Db.Devices.Find(device.Id);
 
-        Assert.Equal("UpdatedSerial", updated!.Serial);
+        Assert.Equal(serialNumber, updated!.SerialNumber);
     }
 
     [Fact]
@@ -122,10 +127,11 @@ public sealed class DeviceRepositoryTestScene : DbTestScene, IClassFixture<DbFix
     {
         var client = createClient();
         await clientRepository.AddAsync(client);
-        var device = createDevice(serial: "serial123", clientId: client.Id);
+        var device = createDevice(clientId: client.Id);
+        var deviceSerial = device.SerialNumber.Value;
         await deviceRepository.AddAsync(device);
 
-        var result = await deviceRepository.GetBySerialAsync("serial123");
+        var result = await deviceRepository.GetBySerialAsync(deviceSerial);
 
         Assert.NotNull(result);
         Assert.Equal(device.Id, result.Id);

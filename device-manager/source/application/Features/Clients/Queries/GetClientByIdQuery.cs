@@ -1,4 +1,5 @@
 using DeviceManager.Common;
+using DeviceManager.Domain;
 using DeviceManager.Domain.Repositories;
 using Mediator;
 
@@ -22,12 +23,11 @@ public static class GetClientByIdQuery
         public async ValueTask<Result<Response?, Error>> Handle(Query request, CancellationToken cancellationToken)
         {
             var client = await clientRepository.GetByIdAsync(request.Id, cancellationToken);
+
             if (client is null)
                 return new Error("Client not found.");
 
             return new Response(client.Id, client.Name, client.Email, client.Phone, client.Status);
         }
     }
-
-    public record Error(string ErrorMessage);
 }

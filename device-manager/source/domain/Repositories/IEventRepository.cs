@@ -1,4 +1,4 @@
-using DeviceManager.Domain.Enums;
+using DeviceManager.Domain.Entities;
 
 namespace DeviceManager.Domain.Repositories;
 

@@ -11,6 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\DeviceManager.Common.csproj" />
+    <ProjectReference Include="..\..\domain\DeviceManager.Domain.csproj" />
   </ItemGroup>
   <ItemGroup Label="Usings">
     <Using Include="Xunit" />

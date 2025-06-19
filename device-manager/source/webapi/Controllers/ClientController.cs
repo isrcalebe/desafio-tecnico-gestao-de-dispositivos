@@ -26,7 +26,7 @@ public class ClientController : ControllerBase
         var result = await mediator.Send(query, cancellationToken);
 
         if (result.IsFailure)
-            return NotFound(result.Error.ErrorMessage);
+            return NotFound(result.Error);
 
         return Ok(result.Value);
     }
@@ -43,7 +43,7 @@ public class ClientController : ControllerBase
         var result = await mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
-            return BadRequest(result.Error.ErrorMessage);
+            return BadRequest(result.Error);
 
         return CreatedAtAction(nameof(GetClientById), new { id = result.Value }, result.Value);
     }

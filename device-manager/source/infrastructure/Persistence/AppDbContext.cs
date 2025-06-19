@@ -1,5 +1,4 @@
 using DeviceManager.Domain.Entities;
-using DeviceManager.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace DeviceManager.Infrastructure.Persistence;

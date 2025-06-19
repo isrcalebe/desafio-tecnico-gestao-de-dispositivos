@@ -28,7 +28,6 @@ public sealed class DbFixture : IAsyncLifetime
         using (var context = new AppDbContext(options))
         {
             await context.Database.EnsureCreatedAsync();
-            await context.Database.MigrateAsync();
         }
     }
 

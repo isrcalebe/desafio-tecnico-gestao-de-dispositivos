@@ -12,27 +12,40 @@ public sealed class DeviceConfiguration : IEntityTypeConfiguration<Device>
 
         builder.HasKey(d => d.Id);
 
-        builder.Property(d => d.Serial)
-            .IsRequired()
-            .HasMaxLength(50)
-            .HasColumnName("SerialNumber");
+        builder.OwnsOne(d => d.SerialNumber, serialNumberBuilder =>
+        {
+            serialNumberBuilder.Property(s => s.Value)
+                .HasColumnName("SerialNumber")
+                .IsRequired()
+                .HasMaxLength(50);
 
-        builder.HasIndex(d => d.Serial)
-            .IsUnique();
+            serialNumberBuilder.HasIndex(s => s.Value)
+                .IsUnique();
+        });
 
-        builder.Property(d => d.IMEI)
-            .IsRequired()
-            .HasMaxLength(40);
+        builder.OwnsOne(d => d.IMEI, imeiBuilder =>
+        {
+            imeiBuilder.Property(i => i.Value)
+                .HasColumnName("IMEI")
+                .IsRequired()
+                .HasMaxLength(15);
 
-        builder.HasIndex(d => d.IMEI)
-            .IsUnique();
+            imeiBuilder.HasIndex(i => i.Value)
+                .IsUnique();
+        });
 
         builder.HasMany(d => d.Events)
             .WithOne(e => e.Device)
-            .HasForeignKey(e => e.DeviceId);
+            .HasForeignKey(e => e.DeviceId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        /*builder.Property(d => d.ActivatedAt)
-            .IsRequired();*/
+        builder.HasOne(d => d.Client)
+            .WithMany(c => c.Devices)
+            .HasForeignKey(d => d.ClientId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(d => d.ActivatedAt)
+            .IsRequired(false);
 
         builder.Property(d => d.CreatedAt)
             .IsRequired();

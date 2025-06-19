@@ -1,4 +1,5 @@
 using DeviceManager.Domain.Entities;
+using DeviceManager.Domain.ValueObjects;
 using DeviceManager.Infrastructure.Repositories;
 
 namespace DeviceManager.IntegrationTests.Repositories;
@@ -17,10 +18,10 @@ public sealed class ClientRepositoryTestScene : DbTestScene, IClassFixture<DbFix
     {
         return Client.Create(
             "Test Client",
-            email ?? $"test{Guid.NewGuid()}@mail.com",
+            email ?? $"test{Guid.CreateVersion7()}@mail.com",
             phone: "1234567890",
             status: status
-        );
+        ).Value;
     }
 
     [Fact]
@@ -42,7 +43,7 @@ public sealed class ClientRepositoryTestScene : DbTestScene, IClassFixture<DbFix
 
         Db.Clients.Add(client);
         Db.SaveChanges();
-        client.Name = "Updated Name";
+        client.UpdateName(ClientName.Create("Updated Name").Value);
         await clientRepository.UpdateAsync(client);
         var updated = await Db.Clients.FindAsync(client.Id);
 

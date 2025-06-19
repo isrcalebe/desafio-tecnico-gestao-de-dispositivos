@@ -1,5 +1,4 @@
 using DeviceManager.Domain.Entities;
-using DeviceManager.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,5 +23,10 @@ public sealed class EventConfiguration : IEntityTypeConfiguration<Event>
 
         builder.Property(e => e.LastUpdatedAt)
             .IsRequired();
+
+        builder.HasOne(e => e.Device)
+            .WithMany(d => d.Events)
+            .HasForeignKey(e => e.DeviceId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

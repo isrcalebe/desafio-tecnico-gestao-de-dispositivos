@@ -12,19 +12,32 @@ public sealed class ClientConfiguration : IEntityTypeConfiguration<Client>
 
         builder.HasKey(c => c.Id);
 
-        builder.Property(c => c.Name)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(c => c.Email)
+        builder.OwnsOne(c => c.Name, nameBuilder =>
+        {
+            nameBuilder.Property(n => n.Value)
+                .HasColumnName("Name")
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(100);
+        });
 
-        builder.HasIndex(c => c.Email)
-            .IsUnique();
+        builder.OwnsOne(c => c.Email, emailBuilder =>
+        {
+            emailBuilder.Property(e => e.Value)
+                .HasColumnName("Email")
+                .IsRequired()
+                .HasMaxLength(100);
 
-        builder.Property(c => c.Phone)
-            .HasMaxLength(20);
+            emailBuilder.HasIndex(e => e.Value)
+                .IsUnique();
+        });
+
+        builder.OwnsOne(c => c.Phone, phoneBuilder =>
+        {
+            phoneBuilder.Property(p => p.Value)
+                .HasColumnName("Phone")
+                .IsRequired(false)
+                .HasMaxLength(15);
+        });
 
         builder.Property(c => c.Status)
             .IsRequired();
@@ -37,6 +50,7 @@ public sealed class ClientConfiguration : IEntityTypeConfiguration<Client>
 
         builder.HasMany(c => c.Devices)
             .WithOne(d => d.Client)
-            .HasForeignKey(d => d.ClientId);
+            .HasForeignKey(d => d.ClientId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

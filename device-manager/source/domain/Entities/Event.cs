@@ -1,7 +1,6 @@
 using DeviceManager.Common.Modeling;
-using DeviceManager.Domain.Entities;
 
-namespace DeviceManager.Domain.Enums;
+namespace DeviceManager.Domain.Entities;
 
 public class Event : Entity
 {

@@ -1,4 +1,5 @@
 using DeviceManager.Common;
+using DeviceManager.Domain;
 using DeviceManager.Domain.Entities;
 using DeviceManager.Domain.Repositories;
 using Mediator;
@@ -24,13 +25,16 @@ public static class CreateClientFeature
             if (clientExists is not null)
                 return new Error("Client with this email already exists.");
 
-            var client = Client.Create(request.Name, request.Email, request.Phone);
+            var result = Client.Create(request.Name, request.Email, request.Phone);
+
+            if (result.IsFailure)
+                return new Error(result.Error.Message);
+
+            var client = result.Value;
 
             await clientRepository.AddAsync(client, cancellationToken);
 
             return client.Id;
         }
     }
-
-    public record Error(string ErrorMessage);
 }

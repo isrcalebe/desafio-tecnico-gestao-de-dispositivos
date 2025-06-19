@@ -1,8 +1,6 @@
-using DeviceManager.Application.Features.Clients.Commands;
 using DeviceManager.Application.Features.Clients.Commands.CreateClient;
 using DeviceManager.Application.Features.Clients.Commands.DeleteClient;
 using DeviceManager.Application.Features.Clients.Commands.UpdateClient;
-using DeviceManager.Application.Features.Clients.Queries;
 using DeviceManager.Application.Features.Clients.Queries.GetAllClients;
 using DeviceManager.Application.Features.Clients.Queries.GetClientById;
 using Mediator;
@@ -52,14 +50,14 @@ public class ClientController : ControllerBase
             : BadRequest(result.Error);
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut]
     [ProducesResponseType(typeof(UpdateClientResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateClient(Guid id, [FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateClient([FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
     {
-        if (request is null || request.ClientId != id)
-            return BadRequest("Invalid request or client ID mismatch.");
+        if (request is null)
+            return BadRequest("Request body cannot be null.");
 
         var result = await mediator.Send(request, cancellationToken);
 

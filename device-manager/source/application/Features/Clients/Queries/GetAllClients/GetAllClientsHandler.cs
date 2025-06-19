@@ -30,6 +30,6 @@ public sealed class GetAllClientsHandler : IRequestHandler<GetAllClientsQuery, R
             client.Status
         ));
 
-        return  new GetAllClientsResponse(clientResponses);
+        return new GetAllClientsResponse(clientResponses);
     }
 }

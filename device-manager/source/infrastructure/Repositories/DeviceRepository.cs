@@ -57,4 +57,11 @@ public sealed class DeviceRepository : IDeviceRepository
         return await db.Devices
             .FirstOrDefaultAsync(d => d.SerialNumber.Value == serial, cancellationToken);
     }
+
+    public async Task<IEnumerable<Device>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await db.Devices
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
 }

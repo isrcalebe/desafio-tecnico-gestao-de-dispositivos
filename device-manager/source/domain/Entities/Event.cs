@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DeviceManager.Common.Modeling;
 
 namespace DeviceManager.Domain.Entities;
@@ -17,7 +18,8 @@ public class Event : Entity
     {
     }
 
-    public enum EventType
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum EventType : byte
     {
         PoweredOn,
         PoweredOff,

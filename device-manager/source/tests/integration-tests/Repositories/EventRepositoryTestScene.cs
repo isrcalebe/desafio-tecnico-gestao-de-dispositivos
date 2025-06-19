@@ -1,4 +1,3 @@
-using System.IO;
 using DeviceManager.Domain.Entities;
 using DeviceManager.Domain.ValueObjects;
 using DeviceManager.Infrastructure.Repositories;
@@ -18,7 +17,6 @@ public sealed class EventRepositoryTestScene : DbTestScene, IClassFixture<DbFixt
         clientRepository = new ClientRepository(Db);
         deviceRepository = new DeviceRepository(Db);
     }
-
 
     private static Event createEvent(Guid deviceId, DateTime createdAt)
     {
@@ -47,7 +45,7 @@ public sealed class EventRepositoryTestScene : DbTestScene, IClassFixture<DbFixt
         var random = new Random();
         var randomIMEI = string.Concat(Enumerable.Range(0, 15).Select(_ => random.Next(0, 10).ToString(CultureInfo.InvariantCulture)));
 
-        var manufacturerCode = new [] { "ABC", "XYZ", "DEF", "GHI", "JKL" } [random.Next(0, 5)];
+        var manufacturerCode = new[] { "ABC", "XYZ", "DEF", "GHI", "JKL" }[random.Next(0, 5)];
         var serialNumber = SerialNumber.CreateManufacturer(manufacturerCode).Value;
         var imeiNumber = IMEI.Create(randomIMEI).Value;
 

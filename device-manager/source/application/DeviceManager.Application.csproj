@@ -2,6 +2,13 @@
   <PropertyGroup Label="Project">
     <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Mediator.Abstractions" Version="3.0.0-preview.65" />
+    <PackageReference Include="Mediator.SourceGenerator" Version="3.0.0-preview.65">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\domain\DeviceManager.Domain.csproj" />
   </ItemGroup>

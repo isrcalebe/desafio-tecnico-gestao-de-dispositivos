@@ -1,31 +1,67 @@
+using DeviceManager.Common;
 using DeviceManager.Common.Modeling;
+using DeviceManager.Domain.ValueObjects;
 
 namespace DeviceManager.Domain.Entities;
 
 public class Device : AggregateRoot
 {
-    public string Serial { get; set; } = string.Empty;
+    public SerialNumber SerialNumber { get; private set; }
 
-    public string IMEI { get; set; } = string.Empty;
+    public IMEI IMEI { get; private set; }
 
-    public DateTime? ActivatedAt { get; set; }
+    public DateTime? ActivatedAt { get; private set; }
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; private set; }
 
-    public virtual Client? Client { get; set; }
+    public virtual Client? Client { get; private set; }
 
-    public virtual ICollection<Event> Events { get; set; } = [];
+    public virtual ICollection<Event> Events { get; private set; } = [];
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private Device()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         : base(Guid.CreateVersion7())
     {
     }
 
-    public static Device Create(string serial, string imei, Guid clientId)
-        => new()
+    public static Result<Device, Error> Create(string serial, string imei, Guid clientId)
+    {
+        var device = new Device();
+
+        var serialResult = SerialNumber.Create(serial);
+        if (serialResult.IsFailure)
+            return serialResult.Error;
+
+        var imeiResult = IMEI.Create(imei);
+        if (imeiResult.IsFailure)
+            return imeiResult.Error;
+
+        device.SerialNumber = serialResult.Value;
+        device.IMEI = imeiResult.Value;
+        device.ClientId = clientId;
+
+        return device;
+    }
+
+    public static Result<Device, Error> Create(SerialNumber serial, IMEI imei, Guid clientId)
+    {
+        var device = new Device
         {
-            Serial = serial,
+            SerialNumber = serial,
             IMEI = imei,
             ClientId = clientId
         };
+
+        return device;
+    }
+
+    public bool Activate()
+    {
+        if (ActivatedAt.HasValue)
+            return false;
+
+        ActivatedAt = DateTime.UtcNow;
+        return true;
+    }
 }

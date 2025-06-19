@@ -1,4 +1,6 @@
+using DeviceManager.Common;
 using DeviceManager.Common.Modeling;
+using DeviceManager.Domain.ValueObjects;
 
 namespace DeviceManager.Domain.Entities;
 
@@ -12,27 +14,62 @@ namespace DeviceManager.Domain.Entities;
 
 public class Client : AggregateRoot
 {
-    public string Name { get; set; } = string.Empty;
+    public ClientName Name { get; private set; }
 
-    public string Email { get; set; } = string.Empty;
+    public Email Email { get; private set; }
 
-    public string? Phone { get; set; }
+    public PhoneNumber? Phone { get; private set; }
 
     public bool Status { get; set; }
 
     public virtual ICollection<Device> Devices { get; set; } = [];
 
+#pragma warning disable CS8618
     private Client()
         : base(Guid.CreateVersion7())
+#pragma warning restore CS8618
     {
     }
 
-    public static Client Create(string name, string email, string? phone = null, bool status = true)
-        => new()
+    public static Result<Client, Error> Create(string name, string email, string? phone = null, bool status = true)
+    {
+        var client = new Client();
+
+        var nameResult = ClientName.Create(name);
+        if (nameResult.IsFailure)
+            return nameResult.Error;
+
+        var emailResult = Email.Create(email);
+        if (emailResult.IsFailure)
+            return emailResult.Error;
+
+        client.Name = nameResult.Value;
+        client.Email = emailResult.Value;
+
+        if (!string.IsNullOrWhiteSpace(phone))
+        {
+            var phoneResult = PhoneNumber.Create(phone);
+            if (phoneResult.IsFailure)
+                return phoneResult.Error;
+
+            client.Phone = phoneResult.Value;
+        }
+
+        client.Status = status;
+
+        return client;
+    }
+
+    public static Result<Client, Error> Create(ClientName name, Email email, PhoneNumber? phone = null, bool status = true)
+    {
+        var client = new Client
         {
             Name = name,
             Email = email,
             Phone = phone,
             Status = status
         };
+
+        return client;
+    }
 }
